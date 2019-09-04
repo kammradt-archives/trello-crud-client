@@ -1,6 +1,7 @@
 # Welcome :tophat:
 
 Hi, the app link is [here](https://trello-crud-client.herokuapp.com/)
+(APIs keys are now revoked/offile)
 
 ## Things that need to be done:
 
