@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" md="3" sm="6">
+  <v-col cols="12" md="4" sm="6">
     <v-card :color="color">
       <v-card-title>
         {{ title }}
@@ -49,7 +49,7 @@ export default {
   methods: {
     createNewTask() {
       axios
-        .post('http://localhost:8080/task', {
+        .post('https://trello-crud-api.herokuapp.com/task', {
           trelloId: '',
           taskName: this.title,
           listName: this.choosedListName,
