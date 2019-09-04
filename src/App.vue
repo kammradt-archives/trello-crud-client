@@ -112,13 +112,13 @@ export default {
   },
   methods: {
     getAll() {
-      axios.get('http://localhost:8080/task').then(response => {
+      axios.get('https://trello-crud-api.herokuapp.com/task').then(response => {
         this.tasks = response.data
       })
     },
     getFilteredBy(listName) {
       axios
-        .get('http://localhost:8080/task/list', { params: { listName } })
+        .get('https://trello-crud-api.herokuapp.com/task/list', { params: { listName } })
         .then(response => {
           this.choosedFilter = listName
           this.tasks = response.data
@@ -132,7 +132,7 @@ export default {
     },
     searchByName() {
       axios
-        .get('http://localhost:8080/task/search', {
+        .get('https://trello-crud-api.herokuapp.com/task/search', {
           params: {
             taskName: this.search.searchField
           }
