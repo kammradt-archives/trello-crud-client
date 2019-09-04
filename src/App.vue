@@ -114,6 +114,7 @@ export default {
     getAll() {
       axios.get('https://trello-crud-api.herokuapp.com/task').then(response => {
         this.tasks = response.data
+        this.choosedFilter = 'ALL'
       })
     },
     getFilteredBy(listName) {
