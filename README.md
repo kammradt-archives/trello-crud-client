@@ -1,11 +1,11 @@
-# vue-template
+# Welcome :tophat:
 
-## Project setup
-```
-npm i
-```
+Hi, the app link is [here](https://trello-crud-client.herokuapp.com/)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Things that need to be done:
+
+- [ ] Create all tests
+- [ ] Improve design
+- [ ] Create different pages/views
+- [ ] Create/Implement other HTTP Methods (PATCH, PUT, etc)
+
