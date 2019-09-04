@@ -3,39 +3,78 @@
     <v-content>
       <v-container>
         <v-row>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" md="8" sm="12">
             <v-card class="ma-1 mb-4">
+              <v-card-title>Search for a specific task</v-card-title>
               <v-card-text>
-                <v-text-field label="Type todo's name . . ." v-model="search.searchField" />
+                <v-text-field
+                  v-model="search.searchField"
+                  label="Type task's name . . ."
+                />
               </v-card-text>
               <v-card-actions>
-                <v-btn @click="searchByName" block class="primary">Search</v-btn>
+                <v-btn block class="primary" @click="searchByName">Search</v-btn>
               </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="4" sm="12">
+            <v-card class="ma-1 mb-4">
+              <v-card-title>Choose your filters</v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-radio-group v-model="choosedFilter" row>
+                      <v-radio label="All" value="ALL" @click="getAll" />
+                      <v-radio
+                        label="Backlog"
+                        value="BACKLOG"
+                        @click="getFilteredBy('BACKLOG')"
+                      />
+                      <v-radio
+                        label="Todo"
+                        value="TODO"
+                        @click="getFilteredBy('TODO')"
+                      />
+                      <v-radio
+                        label="Doing"
+                        value="DOING"
+                        @click="getFilteredBy('DOING')"
+                      />
+                      <v-radio
+                        label="Done"
+                        value="DONE"
+                        @click="getFilteredBy('DONE')"
+                      />
+                    </v-radio-group>
+                  </v-row>
+                </v-container>
+              </v-card-text>
             </v-card>
           </v-col>
 
           <template v-if="search.searchResult">
             <TaskCard
-              :task="search.searchResult"
               :key="search.searchResult.id"
+              :task="search.searchResult"
               :title="search.searchResult.taskName"
               :color="'teal lighten-5'"
             />
           </template>
           <template v-else-if="search.notFound">
             <TaskCard
-              :task="search.possibleNewTask"
               :key="2314"
+              :task="search.possibleNewTask"
               :title="search.possibleNewTask.taskName"
-              :color="'yellow lighten-5'"
-              :newTask="true"
+              :color="'yellow lighten-4'"
+              :new-task="true"
+              @addNewTask="pushNewTask"
             />
           </template>
         </v-row>
 
         <v-row>
           <template v-for="task in tasks">
-            <TaskCard :task="task" :key="task.id" :title="task.taskName" />
+            <TaskCard :key="task.id" :task="task" :title="task.taskName" />
           </template>
         </v-row>
       </v-container>
@@ -55,9 +94,10 @@ export default {
   data() {
     return {
       tasks: [],
+      choosedFilter: 'ALL',
       search: {
         searchField: '',
-        searchResult: null,
+        searchResult: false,
         notFound: false,
         possibleNewTask: {
           taskName: '',
@@ -76,6 +116,20 @@ export default {
         this.tasks = response.data
       })
     },
+    getFilteredBy(listName) {
+      axios
+        .get('http://localhost:8080/task/list', { params: { listName } })
+        .then(response => {
+          this.choosedFilter = listName
+          this.tasks = response.data
+        })
+    },
+    pushNewTask(newTask) {
+      this.tasks.push(newTask)
+      this.search.searchField = ''
+      this.search.searchResult = false
+      this.search.notFound = false
+    },
     searchByName() {
       axios
         .get('http://localhost:8080/task/search', {
@@ -88,7 +142,7 @@ export default {
             this.search.searchResult = response.data
             this.search.searchField = ''
           } else {
-            this.search.searchResult = null
+            this.search.searchResult = false
             this.search.notFound = true
             this.search.possibleNewTask.taskName = this.search.searchField
             this.search.searchField = 'Wrong name! Want to add?'

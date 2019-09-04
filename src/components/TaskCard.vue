@@ -3,16 +3,28 @@
     <v-card :color="color">
       <v-card-title>
         {{ title }}
-        <span class="pl-1 caption grey--text">{{ task.listName }}</span>
       </v-card-title>
-      <v-card-text>Date created {{ (new Date(task.createdAt)).toLocaleDateString("br-PT") }}</v-card-text>
+      <v-card-text>
+        <p>
+          Date created {{ new Date(task.createdAt).toLocaleDateString('br-PT') }}
+        </p>
+        <span v-show="!newTask" class="pl-1 caption grey--text">
+          {{ task.listName }}
+        </span>
+      </v-card-text>
       <v-card-actions>
-        <v-btn v-if="!newTask" class="error">
-          Delete
-        </v-btn>
-        <v-btn @click="createNewTask" v-else class="primary">
-          Click to add
-        </v-btn>
+        <v-btn v-show="newTask" class="primary" @click="createNewTask"
+          >Click to add</v-btn
+        >
+        <v-row>
+          <v-col cols="12" sm="10" class="ml-5">
+            <v-overflow-btn
+              v-if="newTask"
+              v-model="choosedListName"
+              :items="listNameOptions"
+            />
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-card>
   </v-col>
@@ -28,10 +40,24 @@ export default {
     color: String,
     newTask: Boolean
   },
+  data() {
+    return {
+      choosedListName: '',
+      listNameOptions: ['BACKLOG', 'TODO', 'DOING', 'DONE']
+    }
+  },
   methods: {
     createNewTask() {
-      // axios.post()
-      // Post para parte da api que chama a api do trello
+      axios
+        .post('http://localhost:8080/task', {
+          trelloId: '',
+          taskName: this.title,
+          listName: this.choosedListName,
+          createdAt: Date.now
+        })
+        .then(response => {
+          this.$emit('addNewTask', response.data)
+        })
     }
   }
 }
